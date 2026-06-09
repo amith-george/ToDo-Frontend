@@ -1,0 +1,87 @@
+<!-- Top Navbar -->
+<nav class="navbar">
+  <div class="nav-content">
+    <h1 class="nav-title">Todo App</h1>
+    <div class="nav-actions">
+      <button class="add-new-btn nav-add" (click)="openModal()">+ Add New Task</button>
+      <button class="logout-btn" (click)="logout()">Logout</button>
+    </div>
+  </div>
+</nav>
+
+<div class="page-wrapper">
+  <div class="dashboard-card">
+    <div class="header">
+      <h2 class="title">My Tasks</h2>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab-btn" [class.active]="currentTab === 'active'" (click)="setTab('active')">
+        Active Tasks
+      </button>
+      <button class="tab-btn" [class.active]="currentTab === 'completed'" (click)="setTab('completed')">
+        Completed Tasks
+      </button>
+    </div>
+
+    <!-- Task List -->
+    <div class="task-list">
+      <ng-container *ngIf="currentTab === 'active'">
+        <p *ngIf="activeTasks.length === 0" class="empty-state">No active tasks right now!</p>
+        <div class="task-item" *ngFor="let task of activeTasks">
+          <div class="task-content">
+            <h3 class="task-title">{{ task.title }}</h3>
+            <p class="task-desc" *ngIf="task.description">{{ task.description }}</p>
+          </div>
+          <div class="task-actions">
+            <button class="action-btn complete-btn" (click)="toggleCompletion(task)">✔</button>
+            <button class="action-btn delete-btn" (click)="deleteTask(task.id)">🗑</button>
+          </div>
+        </div>
+      </ng-container>
+
+      <ng-container *ngIf="currentTab === 'completed'">
+        <p *ngIf="completedTasks.length === 0" class="empty-state">No completed tasks yet.</p>
+        <div class="task-item completed" *ngFor="let task of completedTasks">
+          <div class="task-content">
+            <h3 class="task-title">{{ task.title }}</h3>
+            <p class="task-desc" *ngIf="task.description">{{ task.description }}</p>
+          </div>
+          <div class="task-actions">
+            <button class="action-btn undo-btn" (click)="toggleCompletion(task)">⟲</button>
+            <button class="action-btn delete-btn" (click)="deleteTask(task.id)">🗑</button>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Overlay -->
+<div class="modal-overlay" *ngIf="isModalOpen" (click)="closeModal()">
+  <!-- Stop propagation to prevent closing when clicking inside the modal box -->
+  <div class="modal-box" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>Create New Task</h2>
+      <button class="close-btn" (click)="closeModal()">✕</button>
+    </div>
+
+    <form [formGroup]="taskForm" (ngSubmit)="addTask()" class="task-form">
+      <div class="form-group">
+        <label>Task Title</label>
+        <input type="text" formControlName="title" placeholder="What needs to be done?" class="task-input">
+      </div>
+      
+      <div class="form-group">
+        <label>Description (Optional)</label>
+        <input type="text" formControlName="description" placeholder="Add more details..." class="task-input desc">
+      </div>
+      
+      <div class="modal-actions">
+        <button type="button" class="cancel-btn" (click)="closeModal()">Cancel</button>
+        <button type="submit" [disabled]="taskForm.invalid" class="add-btn">Create Task</button>
+      </div>
+    </form>
+  </div>
+</div>
