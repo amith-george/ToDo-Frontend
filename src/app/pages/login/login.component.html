@@ -1,0 +1,24 @@
+<div class="page-wrapper">
+  <div class="form-card">
+    <h1 class="title">Welcome Back</h1>
+    <p class="subtitle">Login to your Todo App</p>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" formControlName="email" placeholder="john@example.com">
+      </div>
+
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" formControlName="password" placeholder="••••••••">
+      </div>
+
+      <button type="submit" [disabled]="loginForm.invalid" class="submit-btn">Login</button>
+    </form>
+    
+    <div class="footer">
+      <a routerLink="/register">Don't have an account? Register</a>
+    </div>
+  </div>
+</div>
