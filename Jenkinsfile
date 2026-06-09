@@ -1,33 +1,20 @@
 pipeline {
     agent any
-    
-    environment {
-        IMAGE = "todo-frontend:${BUILD_NUMBER}"
-        CONT = "todo-frontend"
-    }
-    
+
     stages {
         stage('Checkout') {
-            steps { checkout scm }
-        }
-        
-        stage('Debug') {
             steps {
-                bat 'echo IMAGE=%IMAGE%'
+                checkout scm
             }
         }
-        
-        stage('Build Docker Image') {
+
+        stage('Deploy Frontend') {
             steps {
-                bat 'docker build -t %IMAGE% .'
-            }
-        }
-        
-        stage('Run Container') {
-            steps {
-                bat 'docker rm -f %CONT% || true'
-                // Maps host port 8081 to the internal Nginx port 8081 we configured
-                bat 'docker run -d --name %CONT% -p 8081:8081 %IMAGE%'
+                // Ensures the external network exists before compose tries to attach to it
+                bat "docker network create todo-net 2>nul || exit 0"
+                
+                // Spin up the frontend using Compose
+                bat "docker compose up -d --build"
             }
         }
     }
