@@ -25,7 +25,7 @@ export class LoginComponent {
       this.auth.login(this.loginForm.value).subscribe({
         next: (res) => {
           this.auth.saveToken(res.token);
-          alert('Login successful!');
+          this.router.navigate(['/home']);
         },
         error: (err) => {
           alert('Login failed: ' + (err.error?.message || err.error || 'Unknown error'));
